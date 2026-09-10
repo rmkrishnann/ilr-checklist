@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,53 +7,131 @@
 <title>ILR Document Details - What Each Document Contains</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; padding: 20px; }
-  .container { max-width: 900px; margin: 0 auto; }
+  body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; background: #f5f7fa; color: #333; line-height: 1.6; }
+
+  /* ---- LAYOUT ---- */
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ---- SIDEBAR ---- */
+  .sidebar { width: 240px; background: #1a3a5c; color: #fff; padding: 20px 0; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; transition: transform 0.3s; }
+  .sidebar h2 { font-size: 0.95rem; padding: 0 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 10px; font-weight: 600; }
+  .sidebar a { display: block; padding: 9px 16px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.82rem; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .sidebar a.active { background: rgba(255,255,255,0.12); color: #fff; border-left-color: #ffc107; font-weight: 600; }
+  .sidebar .nav-group { margin-bottom: 6px; }
+  .sidebar .nav-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.4); padding: 10px 16px 4px; }
+  .sidebar .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+  .dot-m { background: #5b9bd5; }
+  .dot-w { background: #e57373; }
+  .dot-c { background: #81c784; }
+  .dot-x { background: #b0bec5; }
+  .dot-t { background: #ffb74d; }
+
+  /* hamburger */
+  .hamburger { display: none; position: fixed; top: 12px; left: 12px; z-index: 200; background: #1a3a5c; color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-size: 1.2rem; cursor: pointer; }
+
+  /* ---- MAIN CONTENT ---- */
+  .main { flex: 1; margin-left: 240px; padding: 24px 28px; max-width: 940px; }
+
   h1 { font-size: 1.4rem; color: #1a3a5c; margin-bottom: 4px; }
   .subtitle { color: #666; font-size: 0.88rem; margin-bottom: 20px; }
-  .back-link { display: inline-block; margin-bottom: 20px; color: #2c5f8a; text-decoration: none; font-size: 0.9rem; border: 1px solid #2c5f8a; padding: 6px 14px; border-radius: 4px; }
-  .back-link:hover { background: #2c5f8a; color: #fff; }
-  .cat { margin-bottom: 24px; }
-  .cat-title { font-size: 1rem; font-weight: 700; padding: 10px 14px; border-radius: 6px 6px 0 0; color: #fff; }
-  .cat-main { background: #1a3a5c; }
-  .cat-wife { background: #b71c4e; }
-  .cat-child { background: #2e7d32; }
-  .cat-shared { background: #e65100; }
-  .cat-general { background: #555; }
-  .doc { background: #fff; border: 1px solid #e8e8e8; border-top: none; padding: 14px 16px; }
-  .doc:last-child { border-radius: 0 0 6px 6px; }
+
+  /* ---- CATEGORY SECTIONS ---- */
+  .cat { margin-bottom: 20px; scroll-margin-top: 20px; overflow: hidden; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .cat-header { font-size: 1rem; font-weight: 700; padding: 12px 16px; color: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+  .cat-header:hover { opacity: 0.9; }
+  .cat-header .arrow { transition: transform 0.25s; font-size: 0.8rem; }
+  .cat-header .arrow.collapsed { transform: rotate(-90deg); }
+  .cat-body { background: #fff; }
+  .cat-body.hidden { display: none; }
+
+  .bg-main { background: #1a3a5c; }
+  .bg-wife { background: #b71c4e; }
+  .bg-child { background: #2e7d32; }
+  .bg-exempt { background: #555; }
+  .bg-tips { background: #e65100; }
+
+  .doc { border-bottom: 1px solid #f0f0f0; padding: 14px 16px; }
+  .doc:last-child { border-bottom: none; }
   .doc-name { font-weight: 600; font-size: 0.92rem; color: #1a3a5c; margin-bottom: 4px; }
   .doc-meta { font-size: 0.78rem; color: #888; margin-bottom: 6px; }
   .doc-meta span { display: inline-block; margin-right: 12px; }
   .doc-summary { font-size: 0.85rem; color: #444; }
+
   .tag { display: inline-block; font-size: 0.68rem; font-weight: 600; padding: 1px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; vertical-align: middle; }
   .tag-m { background: #e3f0ff; color: #1a5fa8; }
   .tag-w { background: #fce4ec; color: #b71c4e; }
   .tag-c { background: #e8f5e9; color: #2e7d32; }
   .tag-s { background: #fff3e0; color: #e65100; }
+
   .note-box { background: #fffde7; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 20px 0; border-radius: 0 6px 6px 0; font-size: 0.85rem; }
   .note-box strong { color: #e65100; }
-  footer { margin-top: 30px; text-align: center; color: #999; font-size: 0.78rem; }
-  @media (max-width: 600px) { .doc { padding: 10px 12px; } }
+
+  footer { margin-top: 30px; text-align: center; color: #999; font-size: 0.78rem; padding-bottom: 20px; }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); width: 260px; }
+    .sidebar.open { transform: translateX(0); }
+    .hamburger { display: block; }
+    .main { margin-left: 0; padding: 60px 16px 24px; }
+  }
 </style>
 </head>
 <body>
-<div class="container">
+
+<!-- HAMBURGER (mobile) -->
+<button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+
+<div class="layout">
+
+<!-- ============ SIDEBAR ============ -->
+<nav class="sidebar">
+  <h2>&#128196; Document Details</h2>
+
+  <div class="nav-group">
+    <div class="nav-label">Applicant Documents</div>
+    <a href="#cat-main" onclick="navTo('cat-main')"><span class="dot dot-m"></span>Main Applicant (27)</a>
+    <a href="#cat-wife" onclick="navTo('cat-wife')"><span class="dot dot-w"></span>Dependant Wife (28)</a>
+    <a href="#cat-child" onclick="navTo('cat-child')"><span class="dot dot-c"></span>Dependant Child (24)</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Reference</div>
+    <a href="#cat-exempt" onclick="navTo('cat-exempt')"><span class="dot dot-x"></span>Child Exemptions</a>
+    <a href="#cat-tips" onclick="navTo('cat-tips')"><span class="dot dot-t"></span>General Tips</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Actions</div>
+    <a href="#" onclick="expandAll(); return false;">&#9660; Expand All</a>
+    <a href="#" onclick="collapseAll(); return false;">&#9650; Collapse All</a>
+  </div>
+
+  <div style="padding:16px; margin-top:auto;">
+    <a href="index.html" style="display:block; text-align:center; background:rgba(255,255,255,0.15); padding:8px; border-radius:4px; color:#fff; font-size:0.82rem;">&larr; Back to Checklist</a>
+  </div>
+</nav>
+
+<!-- ============ MAIN CONTENT ============ -->
+<div class="main">
 
 <h1>ILR Document Details &amp; Summaries</h1>
 <p class="subtitle">What each document contains and why it is needed. No personal information included.</p>
 
-<a class="back-link" href="index.html">&larr; Back to Checklist</a>
-
 <div class="note-box">
-  <strong>&#9888; Disclosure Reminder:</strong> If you have received <strong>any notices from the Home Office, HMRC, DWP, local council, or any UK government agency</strong> relating to immigration, tax, benefits, or residency &mdash; even if issued in error &mdash; disclose them in your cover letter and include the original notice plus any resolution/cancellation confirmation. This applies to all applicants.
+  <strong>&#9888; Disclaimer:</strong> This is guidance from personal experience &mdash; always refer to Home Office documents for any queries. If you have received <strong>any notices from the Home Office, HMRC, DWP, local council, or any UK government agency</strong> &mdash; even if issued in error &mdash; disclose them in your cover letter and include the original notice plus any resolution/cancellation confirmation.
 </div>
 
 <!-- ========================================== -->
 <!-- MAIN APPLICANT DOCUMENTS -->
 <!-- ========================================== -->
-<div class="cat">
-  <div class="cat-title cat-main">Main Applicant Documents <span class="tag tag-m">MAIN</span></div>
+<div class="cat" id="cat-main">
+  <div class="cat-header bg-main" onclick="toggleCat(this)">
+    <span>Main Applicant Documents <span class="tag tag-m">MAIN</span></span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="cat-body">
 
   <div class="doc">
     <div class="doc-name">1. Current Passport (Bio Page)</div>
@@ -92,31 +171,31 @@
 
   <div class="doc">
     <div class="doc-name">7. Skilled Worker Application Submission Proof</div>
-    <div class="doc-meta"><span>Category: SW 21.2(i) Evidence</span><span>Required: Critical</span></div>
+    <div class="doc-meta"><span>Category: SW 21.2(i) Evidence</span><span>Required: If applicable</span></div>
     <div class="doc-summary">Confirmation or receipt showing the date the original Skilled Worker visa application was submitted. Critical for proving the qualifying period start date falls within the COVID concession window (24 Jan 2020 &ndash; 30 Jun 2021).</div>
   </div>
 
   <div class="doc">
     <div class="doc-name">8. Certificate of Sponsorship (CoS)</div>
-    <div class="doc-meta"><span>Category: SW 21.2(i) Evidence</span><span>Required: Critical</span></div>
+    <div class="doc-meta"><span>Category: SW 21.2(i) Evidence</span><span>Required: If applicable</span></div>
     <div class="doc-summary">Shows a valid CoS was assigned and supported the Skilled Worker application. One of the four conditions of SW 21.2(i) that must be met.</div>
   </div>
 
   <div class="doc">
     <div class="doc-name">9. Biometrics Appointment Proof</div>
-    <div class="doc-meta"><span>Category: SW 21.2(i) Evidence</span><span>Required: Supporting</span></div>
+    <div class="doc-meta"><span>Category: SW 21.2(i) Evidence</span><span>Required: If applicable</span></div>
     <div class="doc-summary">Appointment confirmation showing biometrics were enrolled at a UKVCAS centre in support of the original Skilled Worker application. Supports in-country application claim.</div>
   </div>
 
   <div class="doc">
     <div class="doc-name">10. UKVCAS Submission Confirmation</div>
-    <div class="doc-meta"><span>Category: SW 21.2(i) Evidence</span><span>Required: Supporting</span></div>
+    <div class="doc-meta"><span>Category: SW 21.2(i) Evidence</span><span>Required: If applicable</span></div>
     <div class="doc-summary">Email or receipt from UKVCAS confirming documents were submitted for the original Skilled Worker application. Further corroborates the application timeline.</div>
   </div>
 
   <div class="doc">
     <div class="doc-name">11. Skilled Worker Visa Grant Letter</div>
-    <div class="doc-meta"><span>Category: SW 21.2(i) Evidence</span><span>Required: Critical</span></div>
+    <div class="doc-meta"><span>Category: SW 21.2(i) Evidence</span><span>Required: If applicable</span></div>
     <div class="doc-summary">Official letter from the Home Office confirming the Skilled Worker visa was granted. Proves the fourth condition of SW 21.2(i) &mdash; that the application was approved.</div>
   </div>
 
@@ -141,7 +220,7 @@
   <div class="doc">
     <div class="doc-name">15. Employer Reference Letter</div>
     <div class="doc-meta"><span>Category: Sponsorship / Employment</span><span>Required: Mandatory</span></div>
-    <div class="doc-summary">Letter from the current employer (sponsor) confirming ongoing employment, job title, salary, that the role is still needed, and that the sponsor holds a valid licence. Satisfies SW 24.1&ndash;24.3.</div>
+    <div class="doc-summary">Letter from the current employer (sponsor) confirming ongoing employment, job title, salary, that the role is still needed, and that the sponsor holds a valid licence. Must be issued within 28 days before ILR application submission. Satisfies SW 24.1&ndash;24.3.</div>
   </div>
 
   <div class="doc">
@@ -212,16 +291,22 @@
 
   <div class="doc">
     <div class="doc-name">27. Resolution / Cancellation Confirmation</div>
-    <div class="doc-meta"><span>Category: Disclosure</span><span>Required: If applicable (with item 30)</span></div>
+    <div class="doc-meta"><span>Category: Disclosure</span><span>Required: If applicable</span></div>
     <div class="doc-summary">Official confirmation that the matter raised in any government notice was resolved, cancelled, or corrected. This is the "proof of closure" &mdash; always submit alongside the original notice to show the issue is fully resolved.</div>
   </div>
+
+  </div><!-- /cat-body -->
 </div>
 
 <!-- ========================================== -->
 <!-- DEPENDANT WIFE DOCUMENTS -->
 <!-- ========================================== -->
-<div class="cat">
-  <div class="cat-title cat-wife">Dependant Wife Documents <span class="tag tag-w">WIFE</span></div>
+<div class="cat" id="cat-wife">
+  <div class="cat-header bg-wife" onclick="toggleCat(this)">
+    <span>Dependant Wife Documents <span class="tag tag-w">WIFE</span></span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="cat-body">
 
   <div class="doc">
     <div class="doc-name">1. Current Passport (Bio + Stamped Pages)</div>
@@ -318,13 +403,19 @@
     <div class="doc-meta"><span>Category: Cohabitation</span><span>Required: Recommended (1&ndash;2 per year)</span></div>
     <div class="doc-summary">Gas, electricity, or water bills at the shared address. At least 1&ndash;2 per year across the qualifying period to show continuous cohabitation. Joint bills are ideal; bills in either spouse's name at the shared address are acceptable with a supporting declaration.</div>
   </div>
+
+  </div><!-- /cat-body -->
 </div>
 
 <!-- ========================================== -->
 <!-- DEPENDANT CHILD DOCUMENTS -->
 <!-- ========================================== -->
-<div class="cat">
-  <div class="cat-title cat-child">Dependant Child Documents <span class="tag tag-c">CHILD</span></div>
+<div class="cat" id="cat-child">
+  <div class="cat-header bg-child" onclick="toggleCat(this)">
+    <span>Dependant Child Documents <span class="tag tag-c">CHILD</span></span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="cat-body">
 
   <div class="doc">
     <div class="doc-name">1. Current Passport (Bio + Stamped Pages)</div>
@@ -388,7 +479,7 @@
 
   <div class="doc">
     <div class="doc-name">16&ndash;17. School Admission / Attendance Letters</div>
-    <div class="doc-meta"><span>Category: UK Residence</span><span>Required: Recommended</span></div>
+    <div class="doc-meta"><span>Category: UK Residence</span><span>Required: If applicable</span></div>
     <div class="doc-summary">Letters from the child's school confirming admission and/or attendance. Provides independent third-party proof that the child has been residing in the UK. Ideally include letters from different years to show continuous residence (e.g. initial admission + a recent year).</div>
   </div>
 
@@ -405,15 +496,9 @@
   </div>
 
   <div class="doc">
-    <div class="doc-name">20&ndash;21. Father's Passport + ILR eVisa / Share Code</div>
+    <div class="doc-name">20&ndash;22. Father's Passport + ILR eVisa + Share Code</div>
     <div class="doc-meta"><span>Category: Parent Settled Status</span><span>Required: Mandatory</span></div>
-    <div class="doc-summary">Father's passport (identity) and ILR eVisa screenshot or share code proving the father has been granted Indefinite Leave to Remain. Required to show the child's parent is settled in the UK.</div>
-  </div>
-
-  <div class="doc">
-    <div class="doc-name">22. Father's ILR Share Code</div>
-    <div class="doc-meta"><span>Category: Parent Settled Status</span><span>Required: Mandatory</span></div>
-    <div class="doc-summary">Share code allowing the caseworker to verify the father's settled status independently via the Home Office online checking service.</div>
+    <div class="doc-summary">Father's passport (identity), ILR eVisa screenshot, and share code proving the father has been granted Indefinite Leave to Remain. The share code allows the caseworker to verify settled status independently via the Home Office online checking service.</div>
   </div>
 
   <div class="doc">
@@ -421,13 +506,19 @@
     <div class="doc-meta"><span>Category: Parent Settled Status</span><span>Required: Mandatory</span></div>
     <div class="doc-summary">Mother's passport (identity) and ILR eVisa screenshot or share code proving the mother has been granted ILR. Both parents being settled is a requirement for a dependant child's settlement application.</div>
   </div>
+
+  </div><!-- /cat-body -->
 </div>
 
 <!-- ========================================== -->
 <!-- EXEMPTIONS FOR CHILD -->
 <!-- ========================================== -->
-<div class="cat">
-  <div class="cat-title cat-general">Documents NOT Required for Dependant Child (Under 18)</div>
+<div class="cat" id="cat-exempt">
+  <div class="cat-header bg-exempt" onclick="toggleCat(this)">
+    <span>Documents NOT Required for Dependant Child (Under 18)</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="cat-body">
 
   <div class="doc">
     <div class="doc-name">Life in the UK Test</div>
@@ -453,21 +544,29 @@
     <div class="doc-name">Council Tax / Utility Bills (in child's name)</div>
     <div class="doc-summary">Children will not have bills in their name. Cohabitation is proven through parents' bills and school letters.</div>
   </div>
+
+  </div><!-- /cat-body -->
 </div>
 
-<div class="note-box">
-  <strong>General Tips for All Applicants:</strong>
-  <ul style="margin:8px 0 0 18px; font-size:0.85rem;">
-    <li>Convert all .docx files to PDF before uploading</li>
-    <li>Convert BRP/passport photographs (JPG) to PDF for consistency</li>
-    <li>Keep individual files under 6 MB (compress large scans if needed)</li>
-    <li>Name files descriptively so the caseworker can identify them easily</li>
-    <li>Your cover letter is your chance to tell the story &mdash; make it clear, concise, and structured</li>
-    <li>Disclose everything proactively &mdash; government notices, stamp errors, prior refusals, anything unusual</li>
-    <li>When in doubt, include the document. More evidence is better than less.</li>
-  </ul>
-</div>
-
+<!-- ========================================== -->
+<!-- GENERAL TIPS -->
+<!-- ========================================== -->
+<div class="cat" id="cat-tips">
+  <div class="cat-header bg-tips" onclick="toggleCat(this)">
+    <span>General Tips for All Applicants</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="cat-body" style="padding: 16px;">
+    <ul style="margin:0 0 0 18px; font-size:0.85rem; color:#444;">
+      <li style="margin-bottom:6px;">Convert all .docx files to PDF before uploading</li>
+      <li style="margin-bottom:6px;">Convert BRP/passport photographs (JPG) to PDF for consistency</li>
+      <li style="margin-bottom:6px;">Keep individual files under 6 MB (compress large scans if needed)</li>
+      <li style="margin-bottom:6px;">Name files descriptively so the caseworker can identify them easily</li>
+      <li style="margin-bottom:6px;">Your cover letter is your chance to tell the story &mdash; make it clear, concise, and structured</li>
+      <li style="margin-bottom:6px;">Disclose everything proactively &mdash; government notices, stamp errors, prior refusals, anything unusual</li>
+      <li>When in doubt, include the document. More evidence is better than less.</li>
+    </ul>
+  </div>
 </div>
 
 <footer>
@@ -475,5 +574,47 @@
   Generic reference template. Not legal advice. Always consult a qualified immigration adviser.
 </footer>
 
+</div><!-- /main -->
+</div><!-- /layout -->
+
+<script>
+function toggleCat(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.arrow');
+  if (body.classList.contains('hidden')) {
+    body.classList.remove('hidden');
+    if (arrow) arrow.classList.remove('collapsed');
+  } else {
+    body.classList.add('hidden');
+    if (arrow) arrow.classList.add('collapsed');
+  }
+}
+
+function navTo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const body = el.querySelector('.cat-body');
+  const arrow = el.querySelector('.arrow');
+  if (body && body.classList.contains('hidden')) {
+    body.classList.remove('hidden');
+    if (arrow) arrow.classList.remove('collapsed');
+  }
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+  const link = document.querySelector('.sidebar a[href="#' + id + '"]');
+  if (link) link.classList.add('active');
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+function expandAll() {
+  document.querySelectorAll('.cat-body').forEach(b => b.classList.remove('hidden'));
+  document.querySelectorAll('.arrow').forEach(a => a.classList.remove('collapsed'));
+}
+
+function collapseAll() {
+  document.querySelectorAll('.cat-body').forEach(b => b.classList.add('hidden'));
+  document.querySelectorAll('.arrow').forEach(a => a.classList.add('collapsed'));
+}
+</script>
 </body>
 </html>
