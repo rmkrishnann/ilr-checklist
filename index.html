@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,65 +7,151 @@
 <title>ILR Document Checklist - Skilled Worker Family Application</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; background: #f5f7fa; color: #333; line-height: 1.5; padding: 20px; }
-  .container { max-width: 960px; margin: 0 auto; }
+  body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; background: #f5f7fa; color: #333; line-height: 1.5; }
+
+  /* ---- LAYOUT ---- */
+  .layout { display: flex; min-height: 100vh; }
+
+  /* ---- SIDEBAR ---- */
+  .sidebar { width: 240px; background: #1a3a5c; color: #fff; padding: 20px 0; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto; z-index: 100; transition: transform 0.3s; }
+  .sidebar h2 { font-size: 0.95rem; padding: 0 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.15); margin-bottom: 10px; font-weight: 600; }
+  .sidebar a { display: block; padding: 9px 16px; color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.82rem; border-left: 3px solid transparent; transition: all 0.2s; }
+  .sidebar a:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .sidebar a.active { background: rgba(255,255,255,0.12); color: #fff; border-left-color: #ffc107; font-weight: 600; }
+  .sidebar .nav-group { margin-bottom: 6px; }
+  .sidebar .nav-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.4); padding: 10px 16px 4px; }
+  .sidebar .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+  .dot-m { background: #5b9bd5; }
+  .dot-w { background: #e57373; }
+  .dot-c { background: #81c784; }
+  .dot-s { background: #ffb74d; }
+  .dot-r { background: #b0bec5; }
+
+  /* hamburger */
+  .hamburger { display: none; position: fixed; top: 12px; left: 12px; z-index: 200; background: #1a3a5c; color: #fff; border: none; border-radius: 6px; padding: 8px 12px; font-size: 1.2rem; cursor: pointer; }
+
+  /* ---- MAIN CONTENT ---- */
+  .main { flex: 1; margin-left: 240px; padding: 24px 28px; max-width: 960px; }
+
   h1 { font-size: 1.5rem; color: #1a3a5c; margin-bottom: 4px; }
   .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 24px; }
   .detail-link { display: inline-block; margin-bottom: 20px; color: #2c5f8a; text-decoration: none; font-size: 0.9rem; border: 1px solid #2c5f8a; padding: 6px 14px; border-radius: 4px; }
   .detail-link:hover { background: #2c5f8a; color: #fff; }
+
   .summary-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
-  .summary-card { background: #fff; border-radius: 8px; padding: 14px 20px; flex: 1; min-width: 140px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); text-align: center; }
+  .summary-card { background: #fff; border-radius: 8px; padding: 14px 20px; flex: 1; min-width: 120px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); text-align: center; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+  .summary-card:hover { transform: translateY(-2px); box-shadow: 0 3px 8px rgba(0,0,0,0.12); }
   .summary-card .num { font-size: 1.8rem; font-weight: 700; color: #1a3a5c; }
   .summary-card .label { font-size: 0.8rem; color: #666; }
-  .section { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px; overflow: hidden; }
+
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; font-size: 0.82rem; }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+
+  /* ---- SECTIONS ---- */
+  .section { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); margin-bottom: 16px; overflow: hidden; scroll-margin-top: 20px; }
   .section-header { padding: 12px 16px; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
   .section-header:hover { opacity: 0.85; }
   .section-header .count { font-size: 0.8rem; font-weight: 400; background: rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 10px; }
-  .section-body { padding: 0 16px 12px; }
+  .section-header .arrow { transition: transform 0.25s; font-size: 0.8rem; margin-left: 8px; }
+  .section-header .arrow.collapsed { transform: rotate(-90deg); }
+  .section-body { padding: 0 16px 12px; transition: max-height 0.3s ease; overflow: hidden; }
+  .section-body.hidden { display: none; }
+
+  .sec-main .section-header { background: #1a3a5c; color: #fff; }
+  .sec-wife .section-header { background: #b71c4e; color: #fff; }
+  .sec-child .section-header { background: #2e7d32; color: #fff; }
+  .sec-shared .section-header { background: #e65100; color: #fff; }
+
+  /* ---- TABLE ---- */
   table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
   th { text-align: left; padding: 8px 6px; border-bottom: 2px solid #e0e0e0; color: #555; font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.3px; }
   td { padding: 7px 6px; border-bottom: 1px solid #f0f0f0; }
   tr:last-child td { border-bottom: none; }
+
   .tag { display: inline-block; font-size: 0.7rem; font-weight: 600; padding: 1px 7px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.3px; }
   .tag-m { background: #e3f0ff; color: #1a5fa8; }
   .tag-w { background: #fce4ec; color: #b71c4e; }
   .tag-c { background: #e8f5e9; color: #2e7d32; }
   .tag-s { background: #fff3e0; color: #e65100; }
-  .check { color: #28a745; font-weight: 600; }
-  .na { color: #999; font-style: italic; font-size: 0.8rem; }
-  .opt { color: #e65100; font-size: 0.8rem; }
+
   input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: #28a745; }
   .cb-label { font-size: 0.78rem; color: #888; margin-left: 4px; }
-  .sec-main .section-header { background: #1a3a5c; color: #fff; }
-  .sec-wife .section-header { background: #b71c4e; color: #fff; }
-  .sec-child .section-header { background: #2e7d32; color: #fff; }
-  .sec-shared .section-header { background: #e65100; color: #fff; }
-  .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 20px; font-size: 0.82rem; }
-  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .na { color: #999; font-style: italic; font-size: 0.8rem; }
+
   .note-box { background: #fffde7; border-left: 4px solid #ffc107; padding: 12px 16px; margin: 16px 0; border-radius: 0 6px 6px 0; font-size: 0.85rem; }
   .note-box strong { color: #e65100; }
   .tip-box { background: #e8f5e9; border-left: 4px solid #43a047; padding: 12px 16px; margin: 16px 0; border-radius: 0 6px 6px 0; font-size: 0.85rem; }
   .tip-box strong { color: #2e7d32; }
-  footer { margin-top: 30px; text-align: center; color: #999; font-size: 0.78rem; }
-  @media (max-width: 600px) {
+
+  footer { margin-top: 30px; text-align: center; color: #999; font-size: 0.78rem; padding-bottom: 20px; }
+
+  /* ---- PROGRESS BAR ---- */
+  .progress-wrap { background: #e0e0e0; border-radius: 10px; height: 8px; margin: 6px 16px 14px; overflow: hidden; }
+  .progress-bar { height: 100%; background: #28a745; border-radius: 10px; transition: width 0.3s; width: 0%; }
+  .progress-text { font-size: 0.75rem; color: rgba(255,255,255,0.6); padding: 0 16px; }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); width: 260px; }
+    .sidebar.open { transform: translateX(0); }
+    .hamburger { display: block; }
+    .main { margin-left: 0; padding: 60px 16px 24px; }
     .summary-bar { flex-direction: column; }
     table { font-size: 0.8rem; }
   }
 </style>
 </head>
 <body>
-<div class="container">
+
+<!-- HAMBURGER (mobile) -->
+<button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+
+<div class="layout">
+
+<!-- ============ SIDEBAR ============ -->
+<nav class="sidebar" id="sidebar">
+  <h2>&#127468;&#127463; ILR Checklist</h2>
+
+  <div class="progress-text" id="progressText">0 / 0 checked</div>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="nav-group">
+    <div class="nav-label">Applicants</div>
+    <a href="#sec-main" onclick="navTo('sec-main')"><span class="dot dot-m"></span>Main Applicant</a>
+    <a href="#sec-wife" onclick="navTo('sec-wife')"><span class="dot dot-w"></span>Dependant Wife</a>
+    <a href="#sec-child" onclick="navTo('sec-child')"><span class="dot dot-c"></span>Dependant Child</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Reference</div>
+    <a href="#sec-shared" onclick="navTo('sec-shared')"><span class="dot dot-s"></span>Shared Documents</a>
+    <a href="#sec-reqs" onclick="navTo('sec-reqs')"><span class="dot dot-r"></span>Requirements</a>
+    <a href="#sec-tips" onclick="navTo('sec-tips')"><span class="dot dot-r"></span>Cover Letter Tips</a>
+  </div>
+
+  <div class="nav-group">
+    <div class="nav-label">Actions</div>
+    <a href="#" onclick="expandAll(); return false;">&#9660; Expand All</a>
+    <a href="#" onclick="collapseAll(); return false;">&#9650; Collapse All</a>
+    <a href="#" onclick="uncheckAll(); return false;">&#10006; Reset All Checkboxes</a>
+  </div>
+
+  <div style="padding:16px; margin-top:auto;">
+    <a href="ILR_Document_Details.html" style="display:block; text-align:center; background:rgba(255,255,255,0.15); padding:8px; border-radius:4px; color:#fff; font-size:0.82rem;">View Document Details &rarr;</a>
+  </div>
+</nav>
+
+<!-- ============ MAIN CONTENT ============ -->
+<div class="main">
 
 <h1>ILR Document Checklist</h1>
 <p class="subtitle">Skilled Worker Route &mdash; SET(O) Family Application (Main Applicant + Dependant Wife + Dependant Child)</p>
 
-<a class="detail-link" href="ILR_Document_Details.html">View Document Details &amp; Summaries &rarr;</a>
-
 <div class="summary-bar">
-  <div class="summary-card"><div class="num">27</div><div class="label">Main Applicant</div></div>
-  <div class="summary-card"><div class="num">30</div><div class="label">Wife (Dependant)</div></div>
-  <div class="summary-card"><div class="num">23</div><div class="label">Child (Dependant)</div></div>
-  <div class="summary-card"><div class="num">74</div><div class="label">Total Submissions</div></div>
+  <div class="summary-card" onclick="navTo('sec-main')"><div class="num">27</div><div class="label">Main Applicant</div></div>
+  <div class="summary-card" onclick="navTo('sec-wife')"><div class="num">30</div><div class="label">Wife (Dependant)</div></div>
+  <div class="summary-card" onclick="navTo('sec-child')"><div class="num">23</div><div class="label">Child (Dependant)</div></div>
+  <div class="summary-card"><div class="num" id="totalChecked">0</div><div class="label">Checked So Far</div></div>
 </div>
 
 <div class="legend">
@@ -75,15 +162,15 @@
   <div class="legend-item">&#9744; = Tick when ready&nbsp;&nbsp;|&nbsp;&nbsp;<em style="color:#e65100;">if applicable</em> = Include only if relevant to you</div>
 </div>
 
- <div class="note-box">
-  <strong>&#9888; Disclosure Reminder:</strong> This checklist is just a guidance from my personal experience always refer to home office documents for any queries
+<div class="note-box">
+  <strong>&#9888; Disclaimer:</strong> This checklist is just a guidance from my personal experience &mdash; always refer to Home Office documents for any queries.
 </div>
 
 <!-- ============ MAIN APPLICANT ============ -->
-<div class="section sec-main">
+<div class="section sec-main" id="sec-main">
   <div class="section-header" onclick="toggle(this)">
-    Main Applicant &mdash; Skilled Worker ILR (SW 21.1 + SW 21.2(i))
-    <span class="count">27 docs</span>
+    <span>Main Applicant &mdash; Skilled Worker ILR (SW 21.1 + SW 21.2(i))</span>
+    <span><span class="count">27 docs</span> <span class="arrow">&#9660;</span></span>
   </div>
   <div class="section-body">
     <table>
@@ -98,11 +185,11 @@
         <tr><td>6</td><td>eVisa Share Code</td><td>Immigration Status</td><td><input type="checkbox"></td></tr>
 
         <tr><td colspan="4" style="background:#f5f7fa; font-weight:600; color:#555;">SW 21.2(i) COVID Concession Evidence (if applicable)</td></tr>
-        <tr><td>7</td><td>Skilled Worker Application Submission Proof</td><td>SW 21.2(i)</td><td><input type="checkbox"></td></tr>
-        <tr><td>8</td><td>Certificate of Sponsorship</td><td>SW 21.2(i)</td><td><input type="checkbox"></td></tr>
-        <tr><td>9</td><td>Biometrics Appointment Proof</td><td>SW 21.2(i)</td><td><input type="checkbox"></td></tr>
-        <tr><td>10</td><td>UKVCAS Submission Confirmation</td><td>SW 21.2(i)</td><td><input type="checkbox"></td></tr>
-        <tr><td>11</td><td>Skilled Worker Visa Grant Letter</td><td>SW 21.2(i)</td><td><input type="checkbox"></td></tr>
+        <tr><td>7</td><td>Skilled Worker Application Submission Proof</td><td>SW 21.2(i)</td><td><input type="checkbox"> <span class="cb-label">if applicable</span></td></tr>
+        <tr><td>8</td><td>Certificate of Sponsorship</td><td>SW 21.2(i)</td><td><input type="checkbox"> <span class="cb-label">if applicable</span></td></tr>
+        <tr><td>9</td><td>Biometrics Appointment Proof</td><td>SW 21.2(i)</td><td><input type="checkbox"> <span class="cb-label">if applicable</span></td></tr>
+        <tr><td>10</td><td>UKVCAS Submission Confirmation</td><td>SW 21.2(i)</td><td><input type="checkbox"> <span class="cb-label">if applicable</span></td></tr>
+        <tr><td>11</td><td>Skilled Worker Visa Grant Letter</td><td>SW 21.2(i)</td><td><input type="checkbox"> <span class="cb-label">if applicable</span></td></tr>
 
         <tr><td colspan="4" style="background:#f5f7fa; font-weight:600; color:#555;">Settlement Requirements</td></tr>
         <tr><td>12</td><td>Life in the UK Test Certificate</td><td>Knowledge of Life</td><td><input type="checkbox"></td></tr>
@@ -139,10 +226,10 @@
 </div>
 
 <!-- ============ DEPENDANT WIFE ============ -->
-<div class="section sec-wife">
+<div class="section sec-wife" id="sec-wife">
   <div class="section-header" onclick="toggle(this)">
-    Dependant Wife &mdash; Partner Settlement (SW 39&ndash;46)
-    <span class="count">30 docs</span>
+    <span>Dependant Wife &mdash; Partner Settlement (SW 39&ndash;46)</span>
+    <span><span class="count">30 docs</span> <span class="arrow">&#9660;</span></span>
   </div>
   <div class="section-body">
     <table>
@@ -198,10 +285,10 @@
 </div>
 
 <!-- ============ DEPENDANT CHILD ============ -->
-<div class="section sec-child">
+<div class="section sec-child" id="sec-child">
   <div class="section-header" onclick="toggle(this)">
-    Dependant Child &mdash; Child Settlement (Appendix Children, SW 37&ndash;46)
-    <span class="count">23 docs</span>
+    <span>Dependant Child &mdash; Child Settlement (Appendix Children, SW 37&ndash;46)</span>
+    <span><span class="count">23 docs</span> <span class="arrow">&#9660;</span></span>
   </div>
   <div class="section-body">
     <table>
@@ -233,8 +320,8 @@
         <tr><td>15</td><td>Resolution / Cancellation Confirmation for above <span class="tag tag-s">Shared</span></td><td>Disclosure</td><td><input type="checkbox"> <span class="cb-label">if applicable</span></td></tr>
 
         <tr><td colspan="4" style="background:#f5f7fa; font-weight:600; color:#555;">UK Residence Evidence</td></tr>
-        <tr><td>16</td><td>School Admission / Attendance Letter (earlier year)</td><td>UK Residence</td><td><input type="checkbox"> <span class="cb-label">if available</span></td></tr>   
-        <tr><td>17</td><td>School Admission / Attendance Letter (recent year)</td><td>UK Residence</td><td><input type="checkbox"> <span class="cb-label">if available</span></td></tr>
+        <tr><td>16</td><td>School Admission / Attendance Letter (earlier year)</td><td>UK Residence</td><td><input type="checkbox"> <span class="cb-label">if applicable</span></td></tr>
+        <tr><td>17</td><td>School Admission / Attendance Letter (recent year)</td><td>UK Residence</td><td><input type="checkbox"> <span class="cb-label">if applicable</span></td></tr>
         <tr><td>18</td><td>Cohabitation Proof &mdash; Energy Bill (recent) <span class="tag tag-s">Shared</span></td><td>Cohabitation</td><td><input type="checkbox"></td></tr>
         <tr><td>19</td><td>Cohabitation Proof &mdash; Council Tax (current year) <span class="tag tag-s">Shared</span></td><td>Cohabitation</td><td><input type="checkbox"></td></tr>
 
@@ -253,10 +340,10 @@
 </div>
 
 <!-- ============ SHARED DOCS ============ -->
-<div class="section sec-shared">
+<div class="section sec-shared" id="sec-shared">
   <div class="section-header" onclick="toggle(this)">
-    Shared / Common Documents (same file used across applications)
-    <span class="count">4 types</span>
+    <span>Shared / Common Documents (same file used across applications)</span>
+    <span><span class="count">4 types</span> <span class="arrow">&#9660;</span></span>
   </div>
   <div class="section-body">
     <table>
@@ -265,17 +352,17 @@
         <tr><td>Government Notices &amp; Resolution Letters</td><td><span class="tag tag-m">Main</span> <span class="tag tag-w">Wife</span> <span class="tag tag-c">Child</span></td><td>If any notices received from Home Office, HMRC, DWP, or other agencies &mdash; same docs submitted for all affected applicants</td></tr>
         <tr><td>Council Tax Bill (current year)</td><td><span class="tag tag-m">Main</span> <span class="tag tag-w">Wife</span> <span class="tag tag-c">Child</span></td><td>Proves shared address / cohabitation for all family members</td></tr>
         <tr><td>Energy / Utility Bill (recent)</td><td><span class="tag tag-w">Wife</span> <span class="tag tag-c">Child</span></td><td>Same utility bill used as cohabitation proof for wife and child</td></tr>
-        <tr><td>Parents' Passport &amp; ILR Status</td><td><span class="tag tag-c">Child</span></td><td>Mother's passport in wife's application is her identity doc; same passport in child's application proves parental relationship</td></tr>
+        <tr><td>Parents' Passport &amp; ILR Status</td><td><span class="tag tag-c">Child</span></td><td>Copies of both parents' passports and ILR proof are needed in the child's application to confirm parental settled status</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
 <!-- ============ REQUIREMENTS ============ -->
-<div class="section" style="border-left: 3px solid #1a3a5c;">
+<div class="section" style="border-left: 3px solid #1a3a5c;" id="sec-reqs">
   <div class="section-header" onclick="toggle(this)" style="background:#f5f7fa; color:#333;">
-    ILR Requirements Verification
-    <span class="count">Verify All</span>
+    <span>ILR Requirements Verification</span>
+    <span><span class="count">Verify All</span> <span class="arrow">&#9660;</span></span>
   </div>
   <div class="section-body">
 
@@ -330,18 +417,25 @@
   </div>
 </div>
 
-<div class="note-box">
-  <strong>&#9888; Cover Letter Best Practice:</strong> Your cover letter for each applicant should briefly explain and disclose:
-  <ul style="margin:8px 0 0 18px;">
-    <li>Any notices from the <strong>Home Office</strong> (retraction notices, curtailment notices, refusal letters &mdash; even if issued in error)</li>
-    <li>Any correspondence from <strong>HMRC</strong> (tax investigations, penalties, status queries)</li>
-    <li>Any notices from <strong>DWP, local councils, NHS, or other government bodies</strong> that touch on immigration status, residency, or right to work</li>
-    <li>Any <strong>passport stamp errors</strong> or discrepancies (e.g. wrong dates from third-country transit)</li>
-    <li>Any <strong>previous visa refusals</strong> (UK or worldwide) and their resolution</li>
-  </ul>
-  <p style="margin-top:8px;">Always include the original notice <em>and</em> the resolution/cancellation confirmation. Proactive disclosure is always better than the Home Office discovering undisclosed issues.</p>
-</div>
-
+<!-- ============ COVER LETTER TIPS ============ -->
+<div class="section" id="sec-tips">
+  <div class="section-header" onclick="toggle(this)" style="background:#555; color:#fff;">
+    <span>Cover Letter Best Practice</span>
+    <span class="arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <div class="note-box" style="margin-top:12px;">
+      <strong>&#9888; Your cover letter for each applicant should briefly explain and disclose:</strong>
+      <ul style="margin:8px 0 0 18px;">
+        <li>Any notices from the <strong>Home Office</strong> (retraction notices, curtailment notices, refusal letters &mdash; even if issued in error)</li>
+        <li>Any correspondence from <strong>HMRC</strong> (tax investigations, penalties, status queries)</li>
+        <li>Any notices from <strong>DWP, local councils, NHS, or other government bodies</strong> that touch on immigration status, residency, or right to work</li>
+        <li>Any <strong>passport stamp errors</strong> or discrepancies (e.g. wrong dates from third-country transit)</li>
+        <li>Any <strong>previous visa refusals</strong> (UK or worldwide) and their resolution</li>
+      </ul>
+      <p style="margin-top:8px;">Always include the original notice <em>and</em> the resolution/cancellation confirmation. Proactive disclosure is always better than the Home Office discovering undisclosed issues.</p>
+    </div>
+  </div>
 </div>
 
 <footer>
@@ -349,11 +443,103 @@
   Generic reference template. Not legal advice. Always consult a qualified immigration adviser.
 </footer>
 
+</div><!-- /main -->
+</div><!-- /layout -->
+
 <script>
+// Toggle section open/close
 function toggle(header) {
   const body = header.nextElementSibling;
-  body.style.display = body.style.display === 'none' ? 'block' : 'none';
+  const arrow = header.querySelector('.arrow');
+  if (body.classList.contains('hidden')) {
+    body.classList.remove('hidden');
+    if (arrow) arrow.classList.remove('collapsed');
+  } else {
+    body.classList.add('hidden');
+    if (arrow) arrow.classList.add('collapsed');
+  }
 }
+
+// Navigate from sidebar: expand section + scroll to it
+function navTo(id) {
+  const section = document.getElementById(id);
+  if (!section) return;
+  const body = section.querySelector('.section-body');
+  const arrow = section.querySelector('.arrow');
+  if (body && body.classList.contains('hidden')) {
+    body.classList.remove('hidden');
+    if (arrow) arrow.classList.remove('collapsed');
+  }
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // highlight sidebar link
+  document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+  const link = document.querySelector('.sidebar a[href="#' + id + '"]');
+  if (link) link.classList.add('active');
+  // close mobile sidebar
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+// Expand all sections
+function expandAll() {
+  document.querySelectorAll('.section-body').forEach(b => b.classList.remove('hidden'));
+  document.querySelectorAll('.arrow').forEach(a => a.classList.remove('collapsed'));
+}
+
+// Collapse all sections
+function collapseAll() {
+  document.querySelectorAll('.section-body').forEach(b => b.classList.add('hidden'));
+  document.querySelectorAll('.arrow').forEach(a => a.classList.add('collapsed'));
+}
+
+// Reset all checkboxes
+function uncheckAll() {
+  if (confirm('Reset all checkboxes? This cannot be undone.')) {
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+    updateProgress();
+    saveState();
+  }
+}
+
+// Progress tracking
+function updateProgress() {
+  const all = document.querySelectorAll('input[type="checkbox"]');
+  const checked = document.querySelectorAll('input[type="checkbox"]:checked');
+  const pct = all.length ? Math.round((checked.length / all.length) * 100) : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressText').textContent = checked.length + ' / ' + all.length + ' checked (' + pct + '%)';
+  document.getElementById('totalChecked').textContent = checked.length;
+}
+
+// Save checkbox state to localStorage
+function saveState() {
+  const states = [];
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => states.push(cb.checked));
+  localStorage.setItem('ilr-checklist', JSON.stringify(states));
+}
+
+// Load checkbox state from localStorage
+function loadState() {
+  const saved = localStorage.getItem('ilr-checklist');
+  if (!saved) return;
+  try {
+    const states = JSON.parse(saved);
+    const boxes = document.querySelectorAll('input[type="checkbox"]');
+    states.forEach((checked, i) => { if (boxes[i]) boxes[i].checked = checked; });
+  } catch(e) {}
+}
+
+// Init
+document.addEventListener('DOMContentLoaded', function() {
+  loadState();
+  updateProgress();
+  // Listen for checkbox changes
+  document.addEventListener('change', function(e) {
+    if (e.target.type === 'checkbox') {
+      updateProgress();
+      saveState();
+    }
+  });
+});
 </script>
 </body>
 </html>
